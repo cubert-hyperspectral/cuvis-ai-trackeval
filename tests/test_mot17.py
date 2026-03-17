@@ -1,14 +1,9 @@
 """ Test to ensure that the code is working correctly.
 Runs all metrics on 14 trackers for the MOT Challenge MOT17 benchmark.
 """
-
-
-import sys
 import os
 import numpy as np
 from multiprocessing import freeze_support
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import trackeval  # noqa: E402
 
 # Fixes multiprocessing on windows, does nothing otherwise
@@ -73,4 +68,5 @@ for tracker in trackers:
 
     print('Tracker %s tests passed' % tracker)
 print('All tests passed')
+
 

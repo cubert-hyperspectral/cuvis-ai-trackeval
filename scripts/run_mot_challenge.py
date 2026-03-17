@@ -32,13 +32,9 @@ Command Line Arguments: Defaults, # Comments
     Metric arguments:
         'METRICS': ['HOTA', 'CLEAR', 'Identity', 'VACE']
 """
-
-import sys
 import os
 import argparse
 from multiprocessing import freeze_support
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import trackeval  # noqa: E402
 
 if __name__ == '__main__':
@@ -89,3 +85,4 @@ if __name__ == '__main__':
     if len(metrics_list) == 0:
         raise Exception('No metrics selected for evaluation')
     evaluator.evaluate(dataset_list, metrics_list)
+

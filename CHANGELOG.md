@@ -1,0 +1,11 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## Unreleased
+
+- Added `cuvis_ai_trackeval` plugin package with TrackEval-based metric nodes.
+- Added `trackeval-cuvis` CLI for COCO tracking report generation.
+- Added `CuvisCOCODataset` adapter for file-based and in-memory evaluation flows.
+- Modernized packaging to `pyproject.toml` and removed legacy setup files.
+- Removed legacy `sys.path` insertion hacks from upstream helper scripts/tests.
