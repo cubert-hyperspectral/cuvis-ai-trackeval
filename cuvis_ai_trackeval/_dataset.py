@@ -354,7 +354,38 @@ class CuvisCOCODataset(_BaseDataset):
         if not frames:
             raise TrackEvalException("frames must contain at least one frame.")
 
-        sorted_frames = sorted(frames, key=lambda item: int(item["frame_id"]))
+        gt_frames: dict[int, dict[str, np.ndarray]] = {}
+        pred_frames: dict[int, dict[str, np.ndarray]] = {}
+        eval_class_id = 1
+
+        for frame in frames:
+            gt_frame_id = int(frame.get("gt_frame_id", frame["frame_id"]))
+            pred_frame_id = int(frame.get("pred_frame_id", frame.get("frame_id", gt_frame_id)))
+
+            gt_track_ids = _as_ids(frame.get("gt_track_ids", []))
+            gt_frames[gt_frame_id] = {
+                "ids": gt_track_ids,
+                "classes": _as_classes(frame.get("gt_category_ids"), len(gt_track_ids), eval_class_id),
+                "dets": _as_boxes(frame.get("gt_bboxes", [])),
+            }
+
+            pred_track_ids = _as_ids(frame.get("pred_track_ids", []))
+            pred_classes = _as_classes(
+                frame.get("pred_category_ids"),
+                len(pred_track_ids),
+                eval_class_id,
+            )
+            pred_classes[pred_classes == 0] = eval_class_id
+            pred_frames[pred_frame_id] = {
+                "ids": pred_track_ids,
+                "classes": pred_classes,
+                "dets": _as_boxes(frame.get("pred_bboxes", [])),
+                "scores": _as_scores(frame.get("pred_scores"), len(pred_track_ids)),
+            }
+
+        frame_ids = sorted(set(gt_frames) | set(pred_frames))
+        if not frame_ids:
+            raise TrackEvalException("frames must contain at least one frame.")
 
         gt_ids: list[np.ndarray] = []
         gt_classes: list[np.ndarray] = []
@@ -365,37 +396,34 @@ class CuvisCOCODataset(_BaseDataset):
         tracker_dets: list[np.ndarray] = []
         tracker_confidences: list[np.ndarray] = []
 
-        eval_class_id = 1
+        for frame_id in frame_ids:
+            gt_frame = gt_frames.get(frame_id)
+            if gt_frame is None:
+                gt_ids.append(np.empty((0,), dtype=int))
+                gt_classes.append(np.empty((0,), dtype=int))
+                gt_dets.append(np.empty((0, 4), dtype=float))
+            else:
+                gt_ids.append(gt_frame["ids"])
+                gt_classes.append(gt_frame["classes"])
+                gt_dets.append(gt_frame["dets"])
 
-        for frame in sorted_frames:
-            gt_boxes = _as_boxes(frame.get("gt_bboxes", []))
-            gt_track_ids = _as_ids(frame.get("gt_track_ids", []))
-            gt_cats = _as_classes(frame.get("gt_category_ids"), len(gt_track_ids), eval_class_id)
-
-            pred_boxes = _as_boxes(frame.get("pred_bboxes", []))
-            pred_track_ids = _as_ids(frame.get("pred_track_ids", []))
-            pred_cats = _as_classes(
-                frame.get("pred_category_ids"),
-                len(pred_track_ids),
-                eval_class_id,
-            )
-            pred_cats[pred_cats == 0] = eval_class_id
-            pred_scores = _as_scores(frame.get("pred_scores"), len(pred_track_ids))
-
-            gt_ids.append(gt_track_ids)
-            gt_classes.append(gt_cats)
-            gt_dets.append(gt_boxes)
-
-            tracker_ids.append(pred_track_ids)
-            tracker_classes.append(pred_cats)
-            tracker_dets.append(pred_boxes)
-            tracker_confidences.append(pred_scores)
+            pred_frame = pred_frames.get(frame_id)
+            if pred_frame is None:
+                tracker_ids.append(np.empty((0,), dtype=int))
+                tracker_classes.append(np.empty((0,), dtype=int))
+                tracker_dets.append(np.empty((0, 4), dtype=float))
+                tracker_confidences.append(np.empty((0,), dtype=float))
+            else:
+                tracker_ids.append(pred_frame["ids"])
+                tracker_classes.append(pred_frame["classes"])
+                tracker_dets.append(pred_frame["dets"])
+                tracker_confidences.append(pred_frame["scores"])
 
         gt_raw = {
             "gt_ids": gt_ids,
             "gt_classes": gt_classes,
             "gt_dets": gt_dets,
-            "num_timesteps": len(sorted_frames),
+            "num_timesteps": len(frame_ids),
             "seq": self.seq_list[0],
         }
         tracker_raw = {
@@ -403,7 +431,7 @@ class CuvisCOCODataset(_BaseDataset):
             "tracker_classes": tracker_classes,
             "tracker_dets": tracker_dets,
             "tracker_confidences": tracker_confidences,
-            "num_timesteps": len(sorted_frames),
+            "num_timesteps": len(frame_ids),
             "seq": self.seq_list[0],
         }
         return gt_raw, tracker_raw, eval_class_id

@@ -37,9 +37,14 @@ def _to_numpy_scores(tensor: torch.Tensor | None, size: int) -> np.ndarray:
     return np.asarray(arr, dtype=float).reshape(-1)
 
 
+def _to_int_scalar(tensor: torch.Tensor) -> int:
+    return int(tensor.reshape(-1)[0].item())
+
+
 def make_frame_record(
     *,
     frame_id: torch.Tensor,
+    pred_frame_id: torch.Tensor | None,
     gt_bboxes: torch.Tensor,
     gt_track_ids: torch.Tensor,
     pred_bboxes: torch.Tensor,
@@ -47,8 +52,12 @@ def make_frame_record(
     pred_scores: torch.Tensor | None = None,
 ) -> dict[str, Any]:
     pred_ids = _to_numpy_ids(pred_track_ids)
+    gt_frame = _to_int_scalar(frame_id)
+    pred_frame = gt_frame if pred_frame_id is None else _to_int_scalar(pred_frame_id)
     return {
-        "frame_id": int(frame_id.reshape(-1)[0].item()),
+        "frame_id": gt_frame,
+        "gt_frame_id": gt_frame,
+        "pred_frame_id": pred_frame,
         "gt_bboxes": _to_numpy_boxes(gt_bboxes),
         "gt_track_ids": _to_numpy_ids(gt_track_ids),
         "pred_bboxes": _to_numpy_boxes(pred_bboxes),

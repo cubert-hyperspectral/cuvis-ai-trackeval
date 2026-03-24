@@ -22,6 +22,7 @@ class HOTAMetricNode(Node):
 
     INPUT_SPECS = {
         "frame_id": PortSpec(dtype=torch.int64, shape=(1,)),
+        "pred_frame_id": PortSpec(dtype=torch.int64, shape=(1,), optional=True),
         "gt_bboxes": PortSpec(dtype=torch.float32, shape=(1, -1, 4)),
         "gt_track_ids": PortSpec(dtype=torch.int64, shape=(1, -1)),
         "pred_bboxes": PortSpec(dtype=torch.float32, shape=(1, -1, 4)),
@@ -53,12 +54,14 @@ class HOTAMetricNode(Node):
         gt_track_ids: torch.Tensor,
         pred_bboxes: torch.Tensor,
         pred_track_ids: torch.Tensor,
+        pred_frame_id: torch.Tensor | None = None,
         pred_scores: torch.Tensor | None = None,
         **_: Any,
     ) -> dict[str, torch.Tensor]:
         self._frames.append(
             make_frame_record(
                 frame_id=frame_id,
+                pred_frame_id=pred_frame_id,
                 gt_bboxes=gt_bboxes,
                 gt_track_ids=gt_track_ids,
                 pred_bboxes=pred_bboxes,
