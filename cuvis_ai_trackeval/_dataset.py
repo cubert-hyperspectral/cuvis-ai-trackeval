@@ -6,8 +6,9 @@ import copy
 import json
 import tempfile
 from collections import defaultdict
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any
 
 import numpy as np
 
@@ -26,9 +27,9 @@ def _ensure_numpy_aliases() -> None:
 
 _ensure_numpy_aliases()
 
-import trackeval
-from trackeval.datasets._base_dataset import _BaseDataset
-from trackeval.utils import TrackEvalException
+import trackeval  # noqa: E402
+from trackeval.datasets._base_dataset import _BaseDataset  # noqa: E402
+from trackeval.utils import TrackEvalException  # noqa: E402
 
 DEFAULT_METRICS: tuple[str, ...] = ("hota", "clear", "identity")
 _VALID_METRICS: tuple[str, ...] = ("hota", "clear", "identity")
@@ -130,7 +131,7 @@ def build_metrics_list(metric_names: Iterable[str] | None, match_threshold: floa
 
 
 def run_trackeval_evaluation(
-    dataset: "CuvisCOCODataset",
+    dataset: CuvisCOCODataset,
     metric_names: Iterable[str] | None = None,
     *,
     match_threshold: float = 0.5,
@@ -156,7 +157,7 @@ def run_trackeval_evaluation(
 
 def extract_combined_results(
     results: dict[str, Any],
-    dataset: "CuvisCOCODataset",
+    dataset: CuvisCOCODataset,
 ) -> dict[str, Any]:
     dataset_name = dataset.get_name()
     tracker_name = dataset.tracker_list[0]
@@ -181,7 +182,7 @@ class CuvisCOCODataset(_BaseDataset):
         tracker_name: str = "tracker",
         match_threshold: float = 0.5,
         output_dir: str | Path | None = None,
-    ) -> "CuvisCOCODataset":
+    ) -> CuvisCOCODataset:
         return cls(
             tracker_name=tracker_name,
             match_threshold=match_threshold,
@@ -365,7 +366,9 @@ class CuvisCOCODataset(_BaseDataset):
             gt_track_ids = _as_ids(frame.get("gt_track_ids", []))
             gt_frames[gt_frame_id] = {
                 "ids": gt_track_ids,
-                "classes": _as_classes(frame.get("gt_category_ids"), len(gt_track_ids), eval_class_id),
+                "classes": _as_classes(
+                    frame.get("gt_category_ids"), len(gt_track_ids), eval_class_id
+                ),
                 "dets": _as_boxes(frame.get("gt_bboxes", [])),
             }
 
@@ -442,7 +445,9 @@ class CuvisCOCODataset(_BaseDataset):
         for key, value in raw.items():
             if isinstance(value, list):
                 cloned[key] = [
-                    np.array(item, copy=True) if isinstance(item, np.ndarray) else copy.deepcopy(item)
+                    np.array(item, copy=True)
+                    if isinstance(item, np.ndarray)
+                    else copy.deepcopy(item)
                     for item in value
                 ]
             else:
@@ -465,7 +470,14 @@ class CuvisCOCODataset(_BaseDataset):
 
         self._check_unique_ids(raw_data)
 
-        data_keys = ["gt_ids", "tracker_ids", "gt_dets", "tracker_dets", "tracker_confidences", "similarity_scores"]
+        data_keys = [
+            "gt_ids",
+            "tracker_ids",
+            "gt_dets",
+            "tracker_dets",
+            "tracker_confidences",
+            "similarity_scores",
+        ]
         data = {key: [None] * raw_data["num_timesteps"] for key in data_keys}
 
         unique_gt_ids: list[int] = []
@@ -525,7 +537,9 @@ class CuvisCOCODataset(_BaseDataset):
         self._check_unique_ids(data, after_preproc=True)
         return data
 
-    def _calculate_similarities(self, gt_dets_t: np.ndarray, tracker_dets_t: np.ndarray) -> np.ndarray:
+    def _calculate_similarities(
+        self, gt_dets_t: np.ndarray, tracker_dets_t: np.ndarray
+    ) -> np.ndarray:
         return self._calculate_box_ious(
             gt_dets_t,
             tracker_dets_t,

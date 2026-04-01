@@ -2,6 +2,9 @@
 .vscode
 **.pyc
 **__pycache__
+*.egg-info/
+build/
+dist/
 gt_data/*
 !gt_data/Readme.md
 tracker_output/*
@@ -12,4 +15,3 @@ data
 **/__pycache__
 .idea
 error_log.txt
-uv.lock
