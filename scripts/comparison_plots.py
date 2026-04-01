@@ -1,7 +1,4 @@
-import sys
 import os
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import trackeval  # noqa: E402
 
 plots_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'plots'))
@@ -18,3 +15,4 @@ trackers = os.listdir(data_fol)
 out_loc = os.path.join(plots_folder, dataset)
 for cls in classes:
     trackeval.plotting.plot_compare_trackers(data_fol, trackers, cls, out_loc)
+

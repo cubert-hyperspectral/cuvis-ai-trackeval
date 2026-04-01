@@ -31,13 +31,9 @@ Command Line Arguments: Defaults, # Comments
     Metric arguments:
         'METRICS': ['HOTA', 'CLEAR', 'Identity', 'TrackMAP']
 """
-
-import sys
 import os
 import argparse
 from multiprocessing import freeze_support
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import trackeval  # noqa: E402
 
 if __name__ == '__main__':

@@ -1,12 +1,8 @@
 # python3 scripts/run_rob_mots.py --ROBMOTS_SPLIT train --TRACKERS_TO_EVAL STP --USE_PARALLEL True --NUM_PARALLEL_CORES 8
-
-import sys
 import os
 import csv
 import numpy as np
 from multiprocessing import freeze_support
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import trackeval  # noqa: E402
 from trackeval import utils
 
@@ -140,3 +136,4 @@ if __name__ == '__main__':
                     if bench == 'overall':
                         continue
                     writer.writerow([bench] + rowify(final_results[bench]))
+
