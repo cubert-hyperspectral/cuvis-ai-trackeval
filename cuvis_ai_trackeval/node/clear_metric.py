@@ -6,6 +6,7 @@ from typing import Any
 
 import torch
 from cuvis_ai_core.node import Node
+from cuvis_ai_schemas.enums import NodeCategory, NodeTag
 from cuvis_ai_schemas.pipeline import PortSpec
 
 from cuvis_ai_trackeval._dataset import (
@@ -18,6 +19,16 @@ from cuvis_ai_trackeval.node._tensor_utils import make_frame_record
 
 class CLEARMetricNode(Node):
     """Accumulate per-frame tracking data and compute CLEAR metrics in finalize()."""
+
+    _category = NodeCategory.METRIC
+    _tags = frozenset(
+        {
+            NodeTag.BBOX,
+            NodeTag.TRACKING,
+            NodeTag.EVALUATION,
+            NodeTag.NUMPY,
+        }
+    )
 
     INPUT_SPECS = {
         "frame_id": PortSpec(dtype=torch.int64, shape=(1,)),
