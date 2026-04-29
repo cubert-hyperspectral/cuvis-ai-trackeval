@@ -22,12 +22,14 @@ class HOTAMetricNode(Node):
     """Accumulate per-frame tracking data and compute HOTA in finalize()."""
 
     _category = NodeCategory.METRIC
-    _tags = frozenset({
-        NodeTag.BBOX,
-        NodeTag.TRACKING,
-        NodeTag.EVALUATION,
-        NodeTag.NUMPY,
-    })
+    _tags = frozenset(
+        {
+            NodeTag.BBOX,
+            NodeTag.TRACKING,
+            NodeTag.EVALUATION,
+            NodeTag.NUMPY,
+        }
+    )
 
     INPUT_SPECS = {
         "frame_id": PortSpec(dtype=torch.int64, shape=(1,)),

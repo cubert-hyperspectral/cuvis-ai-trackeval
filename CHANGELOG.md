@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## 0.1.1 - 2026-04-29
 
-- Annotated `IdentityMetricNode`, `CLEARMetricNode`, and `HOTAMetricNode` with `_category = NodeCategory.METRIC` and `_tags = {BBOX, TRACKING, EVALUATION, NUMPY}` so the metric nodes surface under the correct category and filters in the cuvis-ai palette (ALL-5187 Phase 6).
+- Annotated `IdentityMetricNode`, `CLEARMetricNode`, and `HOTAMetricNode` with `_category = NodeCategory.METRIC` and `_tags = {BBOX, TRACKING, EVALUATION, NUMPY}` so the metric nodes surface under the correct category and filters in the cuvis-ai palette.
 - Bumped minimum `cuvis-ai-schemas` from `>=0.3.0` to `>=0.4.0` (`NodeCategory` / `NodeTag` enums were added in v0.4.0).
 - Stripped `hash` fields from `torch` / `torchvision` wheel entries in `uv.lock`.
 
