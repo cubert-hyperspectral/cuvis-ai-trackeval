@@ -514,7 +514,7 @@ dev = [
 requires-dist = [
     { name = "bandit", extras = ["toml"], marker = "extra == 'dev'", specifier = ">=1.7.0" },
     { name = "click", specifier = ">=8.1" },
-    { name = "cuvis-ai-core", specifier = ">=0.7.0" },
+    { name = "cuvis-ai-core", specifier = ">=0.7.1" },
     { name = "cuvis-ai-schemas", specifier = ">=0.5.2" },
     { name = "cyclonedx-bom", marker = "extra == 'dev'", specifier = ">=4.0.0" },
     { name = "detect-secrets", marker = "extra == 'dev'", specifier = ">=1.4.0" },

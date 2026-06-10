@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.1.2 - 2026-06-10
+
+- Require `cuvis-ai-core>=0.7.1` and `cuvis-ai-schemas>=0.5.2` (inherits the upstream security floors transitively).
+- Added the `cuvis_ai_compat.yml` dependency-compatibility workflow (audits the plugin's deps against the cuvis-ai-core lock).
+- Removed the PyPI/TestPyPI release workflow; the plugin is distributed via git tags referenced from cuvis-ai plugin manifests.
+- Stripped `torch` / `torchvision` wheel hashes from `uv.lock`.
+
 ## 0.1.1 - 2026-04-29
 
 - Annotated `IdentityMetricNode`, `CLEARMetricNode`, and `HOTAMetricNode` with `_category = NodeCategory.METRIC` and `_tags = {BBOX, TRACKING, EVALUATION, NUMPY}` so the metric nodes surface under the correct category and filters in the cuvis-ai palette.
