@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Added a `no-local-sources` CI workflow that fails if `pyproject.toml` declares a local `[tool.uv.sources]` path entry (a machine-specific path must not ship in a release).
+
 - CI: add a detect-secrets secret-scan job (git-tracked files only) with a baseline.
 
 ## 0.1.3 - 2026-06-23
