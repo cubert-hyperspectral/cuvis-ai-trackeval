@@ -60,6 +60,28 @@ jobs:
       - name: Run ruff
         run: uv run ruff check cuvis_ai_trackeval tests/cuvis_ai_trackeval
 
+  security:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install dependencies
+        run: uv sync --locked --extra dev
+
+      - name: Run detect-secrets
+        run: uv run detect-secrets scan --baseline .secrets.baseline
+
   build:
     name: Build And Validate
     needs: [test, lint]
