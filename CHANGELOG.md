@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- CI: add a detect-secrets secret-scan job (git-tracked files only) with a baseline.
+
 ## 0.1.3 - 2026-06-23
 
 - Require `cuvis-ai-core>=0.10.0` and `cuvis-ai-schemas>=0.7.0`, adopting the released framework versions.
