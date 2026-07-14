@@ -37,7 +37,7 @@ keywords = [
     "plugin",
 ]
 dependencies = [
-    "cuvis-ai-schemas>=0.7.0",
+    "cuvis-ai-schemas>=0.8.0",
     "cuvis-ai-core>=0.10.0",
     "numpy>=1.24",
     "scipy>=1.10",
