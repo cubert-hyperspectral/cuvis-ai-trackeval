@@ -2,8 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 0.1.4 - 2026-07-17
 
+- Raised the `cuvis-ai-schemas` floor to 0.8.0 and `cuvis-ai-core` to 0.11.0, adopting the released cuvis-ai-next framework versions.
 - Added a `no-local-sources` CI workflow that fails if `pyproject.toml` declares a local `[tool.uv.sources]` path entry (a machine-specific path must not ship in a release).
 
 - CI: add a detect-secrets secret-scan job (git-tracked files only) with a baseline.
